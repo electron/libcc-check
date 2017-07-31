@@ -1,0 +1,14 @@
+{
+  "name": "libcc-check",
+  "private": true,
+  "version": "1.0.0",
+  "description": "A little tool for checking up on libchromiumcontent builds",
+  "bin": "index.js",
+  "repository": "https://github.com/electron/libcc-check",
+  "author": "Zeke Sikelianos <zeke@sikelianos.com>",
+  "license": "MIT",
+  "dependencies": {
+    "colors": "^1.1.2",
+    "got": "^7.1.0"
+  }
+}
