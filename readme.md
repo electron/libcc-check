@@ -2,6 +2,8 @@
 
 A little tool for checking up on [libchromiumcontent](https://github.com/electron/libchromiumcontent) builds.
 
+It checks all open branches and displays the status of compiled assets for each.
+
 ## Installation
 
 ```sh
@@ -10,19 +12,44 @@ npm i -g electron/libcc-check
 
 ## Usage
 
-Pass the SHA you're interested in to find out if it's been successfully 
-compiled for all targets:
+To see status for all remote branches, run the command with no arguments.
 
 ```
-libcc-check 7a9d4a1c9c265468dd54005f6c1920b2cc2c8ec3
-✓ linux/arm
-✓ linux/ia32
-✓ linux/x64
-✓ mas/x64
-✓ osx/x64
-✓ win/ia32
-✓ win/x64
+libcc-check
 ```
+
+The first time you run the CLI, you'll be asked to authenticate with your GitHub
+account. The token is stored in your home directory so this will only happen 
+once.
+
+You can also filter by a specific commit SHA:
+
+```
+libcc-check ebaf0cac1543c32b6a7a567aad95ca051d3a0607
+✓ upgrade-to-chromium-59 - ebaf0cac1543c32b6a7a567aad95ca051d3a0607 - osx/x64
+✓ upgrade-to-chromium-59 - ebaf0cac1543c32b6a7a567aad95ca051d3a0607 - mas/x64
+✓ upgrade-to-chromium-59 - ebaf0cac1543c32b6a7a567aad95ca051d3a0607 - win/ia32
+✓ upgrade-to-chromium-59 - ebaf0cac1543c32b6a7a567aad95ca051d3a0607 - win/x64
+✓ upgrade-to-chromium-59 - ebaf0cac1543c32b6a7a567aad95ca051d3a0607 - linux/ia32
+✓ upgrade-to-chromium-59 - ebaf0cac1543c32b6a7a567aad95ca051d3a0607 - linux/x64
+✓ upgrade-to-chromium-59 - ebaf0cac1543c32b6a7a567aad95ca051d3a0607 - linux/arm
+```
+
+Or by branch name:
+
+```
+libcc-check upgrade-to-chromium-59
+✓ upgrade-to-chromium-59 - ebaf0cac1543c32b6a7a567aad95ca051d3a0607 - osx/x64
+✓ upgrade-to-chromium-59 - ebaf0cac1543c32b6a7a567aad95ca051d3a0607 - mas/x64
+✓ upgrade-to-chromium-59 - ebaf0cac1543c32b6a7a567aad95ca051d3a0607 - win/ia32
+✓ upgrade-to-chromium-59 - ebaf0cac1543c32b6a7a567aad95ca051d3a0607 - win/x64
+✓ upgrade-to-chromium-59 - ebaf0cac1543c32b6a7a567aad95ca051d3a0607 - linux/ia32
+✓ upgrade-to-chromium-59 - ebaf0cac1543c32b6a7a567aad95ca051d3a0607 - linux/x64
+✓ upgrade-to-chromium-59 - ebaf0cac1543c32b6a7a567aad95ca051d3a0607 - linux/arm
+```
+
+You could also just `libcc-check | grep foo`, but  then you'd lose the colored 
+output.
 
 ## License
 

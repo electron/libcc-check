@@ -9,6 +9,8 @@
   "license": "MIT",
   "dependencies": {
     "colors": "^1.1.2",
+    "ghauth": "^3.2.1",
+    "github": "^9.2.0",
     "got": "^7.1.0"
   }
 }
