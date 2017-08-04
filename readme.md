@@ -51,6 +51,19 @@ libcc-check upgrade-to-chromium-59
 You could also just `libcc-check | grep foo`, but  then you'd lose the colored 
 output.
 
+If you want to see the actual file URLs, use the `--urls` flag:
+
+```
+libcc-check 1-6-x --urls
+✓ electron-1-6-x - https://s3.amazonaws.com/github-janky-artifacts/libchromiumcontent/osx/x64/f3e99add3753f82f9ce02788144b9ea9cd6367d8/libchromiumcontent.zip
+✓ electron-1-6-x - https://s3.amazonaws.com/github-janky-artifacts/libchromiumcontent/mas/x64/f3e99add3753f82f9ce02788144b9ea9cd6367d8/libchromiumcontent.zip
+✓ electron-1-6-x - https://s3.amazonaws.com/github-janky-artifacts/libchromiumcontent/win/ia32/f3e99add3753f82f9ce02788144b9ea9cd6367d8/libchromiumcontent.zip
+✓ electron-1-6-x - https://s3.amazonaws.com/github-janky-artifacts/libchromiumcontent/win/x64/f3e99add3753f82f9ce02788144b9ea9cd6367d8/libchromiumcontent.zip
+✓ electron-1-6-x - https://s3.amazonaws.com/github-janky-artifacts/libchromiumcontent/linux/ia32/f3e99add3753f82f9ce02788144b9ea9cd6367d8/libchromiumcontent.zip
+✓ electron-1-6-x - https://s3.amazonaws.com/github-janky-artifacts/libchromiumcontent/linux/x64/f3e99add3753f82f9ce02788144b9ea9cd6367d8/libchromiumcontent.zip
+✓ electron-1-6-x - https://s3.amazonaws.com/github-janky-artifacts/libchromiumcontent/linux/arm/f3e99add3753f82f9ce02788144b9ea9cd6367d8/libchromiumcontent.zip
+```
+
 ## License
 
 MIT

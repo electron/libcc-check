@@ -4,7 +4,8 @@ const got = require('got')
 const assert = require('assert')
 const ghauth = require('ghauth')
 const GitHub = require('github')
-const query = process.argv.slice(2)[0]
+const args = require('minimist')(process.argv.slice(2))
+const query = args._[0]
 require('colors')
 
 const authOptions = {configName: 'libcc-check', note: 'electron/libcc-check'}
@@ -53,8 +54,13 @@ ghauth(authOptions, function (err, authData) {
           
           // add space between branches
           if (!query && i > 0 && asset.branch != assets[i-1].branch) console.log('')
-
-          console.log(`${status} ${asset.branch} - ${asset.commit} - ${asset.platform}`)
+          
+          if (args.urls) {
+            console.log(`${status} ${asset.branch} - ${asset.url}`)
+          } else {
+            console.log(`${status} ${asset.branch} - ${asset.commit} - ${asset.platform}`)
+          }
+          
         })
     })
     .catch(err => {
