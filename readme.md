@@ -4,6 +4,10 @@ A little tool for checking up on [libchromiumcontent](https://github.com/electro
 
 It checks all open branches and displays the status of compiled assets for each.
 
+## Requirements
+
+Node.js version 7.6.0 or above.
+
 ## Installation
 
 ```sh
