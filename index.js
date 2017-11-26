@@ -17,7 +17,8 @@ const platforms = [
   'win/x64',
   'linux/ia32',
   'linux/x64',
-  'linux/arm'
+  'linux/arm',
+  'linux/arm64'
 ]
 const branches = []
 
