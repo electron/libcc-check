@@ -37,6 +37,13 @@ ghauth(authOptions, function (err, authData) {
             platform: platform,
             url: `${url}/${platform}/${branch.commit.sha}/libchromiumcontent.zip`
           })
+          assets.push({
+            branch: branch.name,
+            commit: branch.commit.sha,
+            platform: platform,
+            url: `${url}/${platform}/${branch.commit.sha}/libchromiumcontent-static.zip`,
+            static: true
+          })
         })
       })
 
@@ -52,16 +59,16 @@ ghauth(authOptions, function (err, authData) {
 
       matches.forEach((asset, i) => {
           const status = asset.available ? '\u2713'.green : '\u2717'.red
-          
+
           // add space between branches
           if (!query && i > 0 && asset.branch != assets[i-1].branch) console.log('')
-          
+
           if (args.urls) {
             console.log(`${status} ${asset.branch} - ${asset.url}`)
-          } else {
-            console.log(`${status} ${asset.branch} - ${asset.commit} - ${asset.platform}`)
+          } else  {
+            console.log(`${status} ${asset.branch} (${asset.static?'static':'shared'}) - ${asset.commit} - ${asset.platform}`)
           }
-          
+
         })
     })
     .catch(err => {
