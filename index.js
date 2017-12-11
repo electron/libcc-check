@@ -30,8 +30,8 @@ ghauth(authOptions, function (err, authData) {
     .then(res => {
       const assets = []
       res.data.forEach(branch => {
-        platforms.forEach(platform => {
-          if (!query || query === branch.commit.sha) {
+        if (!query || query === branch.commit.sha) {
+          platforms.forEach(platform => {
             assets.push({
               branch: branch.name,
               commit: branch.commit.sha,
@@ -45,8 +45,8 @@ ghauth(authOptions, function (err, authData) {
               url: `${url}/${platform}/${branch.commit.sha}/libchromiumcontent-static.zip`,
               static: true
             })
-          }
-        })
+          })
+        }
       })
 
       return Promise.all(assets.map(asset => fetch(asset)))
@@ -60,7 +60,7 @@ ghauth(authOptions, function (err, authData) {
           const status = asset.available ? '\u2713'.green : '\u2717'.red
 
           // add space between branches
-          if (!query && i > 0 && asset.branch != assets[i-1].branch) console.log('')
+          if (!query && i > 0 && asset.branch != matches[i-1].branch) console.log('')
 
           if (args.urls) {
             console.log(`${status} ${asset.branch} - ${asset.url}`)
