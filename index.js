@@ -30,30 +30,29 @@ ghauth(authOptions, function (err, authData) {
     .then(res => {
       const assets = []
       res.data.forEach(branch => {
-        platforms.forEach(platform => {
-          assets.push({
-            branch: branch.name,
-            commit: branch.commit.sha,
-            platform: platform,
-            url: `${url}/${platform}/${branch.commit.sha}/libchromiumcontent.zip`
+        if (!query || query === branch.commit.sha) {
+          platforms.forEach(platform => {
+            assets.push({
+              branch: branch.name,
+              commit: branch.commit.sha,
+              platform: platform,
+              url: `${url}/${platform}/${branch.commit.sha}/libchromiumcontent.zip`
+            })
+            assets.push({
+              branch: branch.name,
+              commit: branch.commit.sha,
+              platform: platform,
+              url: `${url}/${platform}/${branch.commit.sha}/libchromiumcontent-static.zip`,
+              static: true
+            })
           })
-          assets.push({
-            branch: branch.name,
-            commit: branch.commit.sha,
-            platform: platform,
-            url: `${url}/${platform}/${branch.commit.sha}/libchromiumcontent-static.zip`,
-            static: true
-          })
-        })
+        }
       })
 
       return Promise.all(assets.map(asset => fetch(asset)))
     })
-    .then((assets) => {
-      const matches = assets
-        .filter(asset => !query || JSON.stringify(asset).includes(query))
-
-      if (!matches.length) {
+    .then((matches) => {
+      if (!matches.length && query) {
         console.log(`No matches found for ${query}. Try again without a query.`)
       }
 
@@ -61,7 +60,7 @@ ghauth(authOptions, function (err, authData) {
           const status = asset.available ? '\u2713'.green : '\u2717'.red
 
           // add space between branches
-          if (!query && i > 0 && asset.branch != assets[i-1].branch) console.log('')
+          if (!query && i > 0 && asset.branch != matches[i-1].branch) console.log('')
 
           if (args.urls) {
             console.log(`${status} ${asset.branch} - ${asset.url}`)
