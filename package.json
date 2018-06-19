@@ -7,14 +7,13 @@
   "repository": "https://github.com/electron/libcc-check",
   "author": "Zeke Sikelianos <zeke@sikelianos.com>",
   "license": "MIT",
-  "engines" : {
-    "node" : ">=7.6.0"
+  "engines": {
+    "node": ">=7.6.0"
   },
   "dependencies": {
+    "@octokit/rest": "^15.2.6",
     "colors": "^1.1.2",
-    "ghauth": "^3.2.1",
-    "github": "^9.2.0",
-    "got": "^7.1.0",
+    "got": "^8.3.0",
     "minimist": "^1.2.0"
   }
 }

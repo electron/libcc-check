@@ -1,14 +1,11 @@
 #!/usr/bin/env node
 
 const got = require('got')
-const assert = require('assert')
-const ghauth = require('ghauth')
-const GitHub = require('github')
+const octokit = require('@octokit/rest')()
 const args = require('minimist')(process.argv.slice(2))
 const query = args._[0]
 require('colors')
 
-const authOptions = {configName: 'libcc-check', note: 'electron/libcc-check'}
 const url = 'https://s3.amazonaws.com/github-janky-artifacts/libchromiumcontent'
 const platforms = [
   'osx/x64',
@@ -20,60 +17,60 @@ const platforms = [
   'linux/arm',
   'linux/arm64'
 ]
-const branches = []
 
-ghauth(authOptions, function (err, authData) {
-  const github = new GitHub()
-  github.authenticate({type: 'token', token: authData.token})
+octokit.repos.getBranches({
+  owner: 'electron',
+  repo: 'libchromiumcontent'
+}).then(checkFiles).then((matches) => {
+  console.log(`Matches are`, matches)
+  if (!matches.length && query) {
+    console.log(`No matches found for ${query}. Try again without a query.`)
+  }
 
-  github.repos.getBranches({owner: 'electron', repo: 'libchromiumcontent'})
-    .then(res => {
-      const assets = []
-      res.data.forEach(branch => {
-        if (!query || query === branch.commit.sha) {
-          platforms.forEach(platform => {
-            assets.push({
-              branch: branch.name,
-              commit: branch.commit.sha,
-              platform: platform,
-              url: `${url}/${platform}/${branch.commit.sha}/libchromiumcontent.zip`
-            })
-            assets.push({
-              branch: branch.name,
-              commit: branch.commit.sha,
-              platform: platform,
-              url: `${url}/${platform}/${branch.commit.sha}/libchromiumcontent-static.zip`,
-              static: true
-            })
-          })
-        }
-      })
+  matches.forEach((asset, i) => {
+    const status = asset.available ? '\u2713'.green : '\u2717'.red
 
-      return Promise.all(assets.map(asset => fetch(asset)))
-    })
-    .then((matches) => {
-      if (!matches.length && query) {
-        console.log(`No matches found for ${query}. Try again without a query.`)
-      }
-
-      matches.forEach((asset, i) => {
-          const status = asset.available ? '\u2713'.green : '\u2717'.red
-
-          // add space between branches
-          if (!query && i > 0 && asset.branch != matches[i-1].branch) console.log('')
-
-          if (args.urls) {
-            console.log(`${status} ${asset.branch} - ${asset.url}`)
-          } else  {
-            console.log(`${status} ${asset.branch} (${asset.static?'static':'shared'}) - ${asset.commit} - ${asset.platform}`)
-          }
-
-        })
-    })
-    .catch(err => {
-      throw err
-    })
+    // add space between branches
+    if (!query && i > 0 && asset.branch !== matches[i - 1].branch) console.log('')
+    if (args.urls) {
+      console.log(`${status} ${asset.branch} - ${asset.url}`)
+    } else {
+      console.log(`${status} ${asset.branch} (${asset.static ? 'static' : 'shared'}) - ${asset.commit} - ${asset.platform}`)
+    }
+  })
+}).catch(err => {
+  throw err
 })
+
+async function checkFiles (res) {
+  const branches = res.data
+  const assets = []
+  for (const branch of branches) {
+    let extension = 'tar.bz2'
+    if (branch.name.indexOf('electron-1-') === 0 || args.zip) {
+      extension = 'zip'
+    }
+    console.log(`Checking urls for ${branch.name}`)
+    if (!query || query === branch.commit.sha) {
+      for (const platform of platforms) {
+        assets.push(await fetch({
+          branch: branch.name,
+          commit: branch.commit.sha,
+          platform: platform,
+          url: `${url}/${platform}/${branch.commit.sha}/libchromiumcontent.${extension}`
+        }))
+        assets.push(await fetch({
+          branch: branch.name,
+          commit: branch.commit.sha,
+          platform: platform,
+          url: `${url}/${platform}/${branch.commit.sha}/libchromiumcontent-static.${extension}`,
+          static: true
+        }))
+      }
+    }
+  }
+  return assets
+}
 
 async function fetch (asset) {
   try {
